@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#0b0d12" />
+    <title>Biazmark</title>
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: #0b0d12;
+        color: #f1f5f9;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
+        overflow-x: hidden;
+      }
+      .wrap {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom) 24px;
+      }
+      .aurora {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .aurora span {
+        position: absolute;
+        border-radius: 9999px;
+        filter: blur(80px);
+        opacity: 0.5;
+      }
+      .a1 { width: 380px; height: 380px; top: -80px; right: -80px;
+            background: radial-gradient(circle, #8b5cf6, transparent 60%);
+            animation: fa 20s ease-in-out infinite; }
+      .a2 { width: 340px; height: 340px; bottom: -80px; left: -80px;
+            background: radial-gradient(circle, #ec4899, transparent 60%);
+            animation: fb 25s ease-in-out infinite; }
+      @keyframes fa { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-60px, 60px) scale(1.15); } }
+      @keyframes fb { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px, -60px) scale(1.1); } }
+
+      header { position: relative; z-index: 1; padding-top: 80px; text-align: center; }
+      .logo {
+        width: 72px; height: 72px;
+        margin: 0 auto 18px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+        box-shadow: 0 20px 50px -10px rgba(139, 92, 246, 0.6);
+        position: relative;
+      }
+      .logo::after {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: 22px;
+        background: rgba(255,255,255,0.08);
+        filter: blur(10px);
+      }
+      h1 {
+        font-size: 38px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        letter-spacing: -0.02em;
+      }
+      .grad {
+        background: linear-gradient(135deg, #a855f7, #ec4899, #06b6d4);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      p.lede { color: #94a3b8; margin: 0 0 28px; font-size: 15px; line-height: 1.5; }
+
+      .body { flex: 1; position: relative; z-index: 1; margin-top: 40px; }
+      label { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #64748b; margin-bottom: 8px; }
+      input[type="url"] {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: rgba(18, 21, 29, 0.7);
+        border: 1px solid #1a1e28;
+        color: #f1f5f9;
+        font-size: 16px;
+        outline: none;
+        transition: all 0.2s;
+      }
+      input[type="url"]:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      }
+      button.primary {
+        width: 100%;
+        margin-top: 16px;
+        padding: 15px;
+        border-radius: 14px;
+        border: none;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 12px 40px -10px rgba(139, 92, 246, 0.6);
+      }
+      button.primary:active { transform: translateY(1px); }
+
+      .chips { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+      .chip {
+        font-size: 12px; padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.25);
+        color: #a5b4fc;
+        cursor: pointer;
+      }
+      .chip:active { transform: scale(0.97); }
+
+      footer {
+        position: relative; z-index: 1;
+        padding: 20px 0 8px;
+        text-align: center;
+        font-size: 12px;
+        color: #475569;
+      }
+      .err { color: #fca5a5; font-size: 13px; margin-top: 10px; text-align: center; }
+      .loading {
+        position: fixed; inset: 0;
+        background: #0b0d12;
+        display: none;
+        align-items: center; justify-content: center;
+        z-index: 100;
+      }
+      .loading.show { display: flex; }
+      .spinner {
+        width: 48px; height: 48px;
+        border-radius: 50%;
+        border: 3px solid rgba(139, 92, 246, 0.25);
+        border-top-color: #a855f7;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+
+    <div class="wrap">
+      <header>
+        <div class="logo"></div>
+        <h1>
+          Welcome to <span class="grad">Biazmark</span>
+        </h1>
+        <p class="lede">
+          Connect your instance to get started. Paste the URL of your Biazmark deployment —
+          Vercel, Railway, or your own server.
+        </p>
+      </header>
+
+      <div class="body">
+        <label for="url">Instance URL</label>
+        <input
+          id="url"
+          type="url"
+          placeholder="https://biazmark.vercel.app"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
+
+        <div class="chips">
+          <span class="chip" data-url="https://biazmark.vercel.app">Default (Vercel)</span>
+          <span class="chip" data-url="http://10.0.2.2:3000">Android emulator → local</span>
+          <span class="chip" data-url="http://localhost:3000">iOS simulator → local</span>
+        </div>
+
+        <button class="primary" id="go">Open Biazmark →</button>
+        <div class="err" id="err"></div>
+      </div>
+
+      <footer>
+        Biazmark · autonomous marketing
+      </footer>
+    </div>
+
+    <div class="loading" id="loading"><div class="spinner"></div></div>
+
+    <script>
+      (async () => {
+        const input = document.getElementById("url");
+        const err = document.getElementById("err");
+        const loading = document.getElementById("loading");
+
+        // Read stored URL (if any) via Capacitor Preferences, fallback to localStorage.
+        let stored = "";
+        try {
+          const { Preferences } = await import("@capacitor/preferences");
+          const r = await Preferences.get({ key: "biazmark.url" });
+          stored = r.value || "";
+        } catch {
+          stored = localStorage.getItem("biazmark.url") || "";
+        }
+        if (stored) input.value = stored;
+
+        document.querySelectorAll(".chip").forEach((el) => {
+          el.addEventListener("click", () => {
+            input.value = el.dataset.url || "";
+          });
+        });
+
+        async function save(url) {
+          try {
+            const { Preferences } = await import("@capacitor/preferences");
+            await Preferences.set({ key: "biazmark.url", value: url });
+          } catch {
+            localStorage.setItem("biazmark.url", url);
+          }
+        }
+
+        async function open(url) {
+          err.textContent = "";
+          let normalized = (url || "").trim();
+          if (!normalized) { err.textContent = "Enter a URL."; return; }
+          if (!/^https?:\/\//i.test(normalized)) normalized = "https://" + normalized;
+          try { new URL(normalized); } catch { err.textContent = "That's not a valid URL."; return; }
+
+          loading.classList.add("show");
+          await save(normalized);
+
+          // Quick ping — makes bad URLs fail fast with a useful message.
+          try {
+            const r = await fetch(normalized + "/api/health", { cache: "no-store" });
+            if (!r.ok) throw new Error("not-ok");
+          } catch (e) {
+            loading.classList.remove("show");
+            err.textContent = "Couldn't reach that instance. Check the URL.";
+            return;
+          }
+
+          window.location.href = normalized + "/";
+        }
+
+        document.getElementById("go").addEventListener("click", () => open(input.value));
+        input.addEventListener("keydown", (e) => { if (e.key === "Enter") open(input.value); });
+      })();
+    </script>
+  </body>
+</html>

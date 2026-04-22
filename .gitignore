@@ -1,0 +1,64 @@
+# Env
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+build/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+*.sqlite
+*.db
+data/
+logs/
+*.log
+
+# Claude Code local
+.claude/settings.local.json
+
+# Build outputs
+tsconfig.tsbuildinfo
+frontend/.vercel/
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/ios/App/Pods/
+mobile/ios/App/build/
+
+# Local overrides
+.env.local
+.env.production
+
+# Secrets
+*.pem
+# Note: mobile/biazmark-release.keystore IS committed on purpose so local
+# builds work out of the box. If you make this repo public, rotate the
+# keystore and load it from a CI secret instead (see DEPLOY.md §6).

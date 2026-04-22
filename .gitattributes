@@ -1,0 +1,20 @@
+# Normalize everything to LF in the repo.
+* text=auto eol=lf
+
+# Shell scripts must stay LF even on Windows — they run in Linux CI.
+*.sh text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf
+
+# Binary — never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.keystore binary
+*.apk binary
+*.jar binary

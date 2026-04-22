@@ -1,0 +1,34 @@
+# Fly.io deployment config for the Biazmark backend.
+#
+# Steps:
+#   1. `fly launch --no-deploy` (generates fly.toml — you can use this one instead)
+#   2. `fly postgres create` and attach it: `fly postgres attach <app>`
+#   3. `fly redis create` (or use Upstash)
+#   4. Set secrets:
+#        fly secrets set ANTHROPIC_API_KEY=... SECRET_KEY=... META_APP_ID=... ...
+#   5. `fly deploy`
+#   6. Put the public URL in your Vercel project as BIAZMARK_BACKEND_URL.
+
+app = "biazmark-backend"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "get"
+    path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"

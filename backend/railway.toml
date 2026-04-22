@@ -1,0 +1,21 @@
+# Railway deployment config for the Biazmark backend.
+#
+# Steps:
+#   1. `railway login`
+#   2. In this folder: `railway init`
+#   3. Add a Postgres + Redis plugin from the dashboard.
+#   4. Set env vars from .env.example (ANTHROPIC_API_KEY, SECRET_KEY, OAuth credentials, …).
+#   5. `railway up` — deploys the Dockerfile.
+#   6. In your Vercel project, set BIAZMARK_BACKEND_URL to the Railway public URL.
+#   7. Add a second Railway service for the worker (same image, different start command).
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
