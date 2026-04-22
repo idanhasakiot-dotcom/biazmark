@@ -15,6 +15,16 @@ primary_region = "fra"
 [build]
   dockerfile = "Dockerfile"
 
+[env]
+  # SQLite on a persistent volume → $0.15/mo instead of $38 managed Postgres.
+  DATABASE_URL = "sqlite+aiosqlite:////data/biazmark.db"
+  MEDIA_STORAGE_DIR = "/data/media"
+  BIAZMARK_TIER = "basic"
+
+[mounts]
+  source = "biazmark_data"
+  destination = "/data"
+
 [http_service]
   internal_port = 8000
   force_https = true
@@ -27,8 +37,8 @@ primary_region = "fra"
     timeout = "5s"
     grace_period = "10s"
     method = "get"
-    path = "/api/health"
+    path = "/healthz"
 
 [[vm]]
   size = "shared-cpu-1x"
-  memory = "1gb"
+  memory = "512mb"
